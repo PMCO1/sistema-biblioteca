@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistema Biblioteca</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" 
+          rel="stylesheet" 
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" 
+          crossorigin="anonymous">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #000; color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+
+        /* NAVBAR */
+        .navbar-custom {
+            background-color: rgba(0,0,0,0.85);
+            backdrop-filter: blur(10px);
+            padding: 0 2rem;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .navbar-brand-text {
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .navbar-links { display: flex; gap: 2rem; list-style: none; }
+        .navbar-links a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        .navbar-links a:hover { color: #fff; }
+
+        /* HERO */
+        .hero {
+		    min-height: calc(100vh - 55px);
+		    display: flex;
+		    flex-direction: column;
+		    align-items: center;
+		    justify-content: center;
+		    text-align: center;
+		    padding: 4rem 2rem;
+		
+		    /* ↓ AQUÍ CONFIGURAS TU IMAGEN */
+		    background-image: url('/images/Biblioteca.jfif'); /* ← cambia el nombre */
+		    background-size: cover;
+		    background-position: center;
+		    background-repeat: no-repeat;
+		
+		    /* ↓ Oscurece la imagen para que el texto se lea bien */
+		    position: relative;
+		    overflow: hidden;
+		}
+
+		/* Capa oscura sobre la imagen */
+		.hero::before {
+		    content: '';
+		    position: absolute;
+		    inset: 0;
+		    background: rgba(0, 0, 0, 0.55); /* ← sube o baja el 0.55 para más/menos oscuridad */
+		    z-index: 0;
+		}
+
+		/* Asegura que el contenido quede sobre la capa oscura */
+		.hero > * {
+		    position: relative;
+		    z-index: 1;
+		}
+		
+        .hero-subtitle {
+            font-size: 1rem;
+            color: #6366f1;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+        .hero-title {
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-description {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.6);
+            max-width: 500px;
+            margin-bottom: 3rem;
+            line-height: 1.6;
+        }
+        .hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+        .btn-hero-primary {
+            background: #6366f1;
+            color: #fff;
+            padding: 0.85rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: none;
+        }
+        .btn-hero-primary:hover { background: #4f46e5; color: #fff; transform: translateY(-2px); }
+        .btn-hero-secondary {
+            background: transparent;
+            color: #6366f1;
+            padding: 0.85rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            border: 1px solid #6366f1;
+            transition: all 0.3s;
+        }
+        .btn-hero-secondary:hover { background: rgba(99,102,241,0.1); color: #a5b4fc; transform: translateY(-2px); }
+
+        /* BOOK IMAGE AREA */
+        .hero-image {
+            margin-top: 4rem;
+            position: relative;
+            z-index: 1;
+        }
+        .books-visual {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            align-items: flex-end;
+        }
+        .book {
+            border-radius: 4px 8px 8px 4px;
+            box-shadow: -4px 4px 20px rgba(0,0,0,0.6), inset -3px 0 8px rgba(0,0,0,0.3);
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .book:hover { transform: translateY(-8px) rotate(-2deg); }
+        .book-1 { width: 60px; height: 180px; background: linear-gradient(135deg, #667eea, #764ba2); }
+        .book-2 { width: 70px; height: 220px; background: linear-gradient(135deg, #f093fb, #f5576c); }
+        .book-3 { width: 65px; height: 200px; background: linear-gradient(135deg, #4facfe, #00f2fe); }
+        .book-4 { width: 55px; height: 160px; background: linear-gradient(135deg, #43e97b, #38f9d7); }
+        .book-5 { width: 70px; height: 210px; background: linear-gradient(135deg, #fa709a, #fee140); }
+        .book-6 { width: 60px; height: 175px; background: linear-gradient(135deg, #a18cd1, #fbc2eb); }
+        .book::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 8px;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+            border-radius: 4px 0 0 4px;
+        }
+
+        /* GLOW under books */
+        .books-glow {
+            width: 400px;
+            height: 20px;
+            background: radial-gradient(ellipse, rgba(99,102,241,0.4) 0%, transparent 70%);
+            margin: 0 auto;
+            margin-top: 1rem;
+            filter: blur(8px);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar-custom">
+        <a href="/" class="navbar-brand-text">Biblioteca Sallarue</a>
+        <ul class="navbar-links">
+            <li><a th:href="@{/}">Inicio</a></li>
+            <li><a th:href="@{/autores}">Autores</a></li>
+            <li><a th:href="@{/libros}">Libros</a></li>
+        </ul>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <p class="hero-subtitle">Sistema de gestión</p>
+        <h1 class="hero-title">Tu Biblioteca<br>Digital</h1>
+        <p class="hero-description">Administra tu colección de libros y autores de forma sencilla y elegante.</p>
+        <div class="hero-buttons">
+            <a th:href="@{/libros}" class="btn-hero-primary">Ver Libros</a>
+            <a th:href="@{/autores}" class="btn-hero-secondary">Ver Autores</a>
+        </div>
+
+        <!-- Libros decorativos -->
+        <div class="hero-image">
+            <div class="books-visual">
+                <div class="book book-1"></div>
+                <div class="book book-2"></div>
+                <div class="book book-3"></div>
+                <div class="book book-4"></div>
+                <div class="book book-5"></div>
+                <div class="book book-6"></div>
+            </div>
+            <div class="books-glow"></div>
+        </div>
+    </section>
+
+</body>
+</html>

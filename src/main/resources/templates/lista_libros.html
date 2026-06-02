@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistema Libros</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+<body class="bg-light">
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-dark bg-dark px-4">
+        <a class="navbar-brand fw-bold" th:href="@{/}">Biblioteca Salarrue</a>
+        <ul class="navbar-nav flex-row gap-4">
+            <li class="nav-item"><a class="nav-link" th:href="@{/}">Inicio</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/autores}">Autores</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/libros}">Libros</a></li>
+        </ul>
+    </nav>
+
+    <div class="container mt-4">
+
+        <!-- ENCABEZADO CENTRADO -->
+        <div class="text-center mb-2">
+            <h2 class="mb-0">Libros</h2>
+            <p class="text-muted mb-0">Sistema de Gestión de Libros</p>
+        </div>
+
+        <!-- BOTÓN VERDE ALINEADO A LA DERECHA -->
+        <div class="d-flex justify-content-end mb-3 pe-2">
+            <a th:href="@{/libros/new_libro}" class="btn btn-success">
+                + Nuevo Libro
+            </a>
+        </div>
+
+        <!-- TABLA CENTRADA -->
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-body p-0">
+                        <table class="table table-striped table-hover mb-0">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Titulo</th>
+                                    <th>Genero</th>
+                                    <th>Autor</th>
+                                    <th>Opciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="libro : ${libros}">
+								    <td th:text="${libro.id}"></td>
+								    <td th:text="${libro.titulo}"></td>
+								    <td th:text="${libro.genero}"></td>
+								    <td th:text="${libro.autor.nombre}"></td>  <!-- ← columna autor -->
+								    <td>
+								        <a th:href="@{/libros/edite/{id}(id=${libro.id})}" class="btn btn-warning btn-sm">Editar</a>
+								        <a th:href="@{/libros/delete/{id}(id=${libro.id})}" class="btn btn-danger btn-sm"
+								           onClick="return confirm('¿Está seguro que desea eliminar el Libro?');">Eliminar</a>
+								    </td>
+								</tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
