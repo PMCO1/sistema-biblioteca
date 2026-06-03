@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ejemplo.sistema_biblioteca.model.Autor;
 import com.ejemplo.sistema_biblioteca.repository.AutorRepository;
@@ -32,9 +33,14 @@ public class AutorController {
 		}
 		
 		@PostMapping("/save")
-		public String save(@ModelAttribute Autor autor) {
-		repositorioA.save(autor);
-		return "redirect:/autores";
+		public String save(@ModelAttribute Autor autor, RedirectAttributes flash) {
+		    try {
+		        repositorioA.save(autor);
+		        flash.addFlashAttribute("exito", "Autor guardado correctamente");
+		    } catch (Exception e) {
+		        flash.addFlashAttribute("error", "Error al guardar el autor: " + e.getMessage());
+		    }
+		    return "redirect:/autores";
 		}
 		
 		@GetMapping("/edite/{id}")
@@ -45,9 +51,13 @@ public class AutorController {
 		}
 		
 		@GetMapping("/delete/{id}")
-		public String delete(@PathVariable Long id) {
-			repositorioA.deleteById(id);
-			return "redirect:/autores";
+		public String delete(@PathVariable Long id, RedirectAttributes flash) {
+		    try {
+		        repositorioA.deleteById(id);
+		        flash.addFlashAttribute("exito", "Autor eliminado correctamente");
+		    } catch (Exception e) {
+		        flash.addFlashAttribute("error", "Error al eliminar el autor");
+		    }
+		    return "redirect:/autores";
 		}
-		
 }
